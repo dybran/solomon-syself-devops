@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: nginx
-  tag: latest
+  repository: solomon/nginx
+  tag: vi
   pullPolicy: IfNotPresent
 
 service:

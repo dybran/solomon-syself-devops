@@ -15,6 +15,9 @@ cd into the repository directory
 
 ## __Create and package a helm chart to deploy a simple backend__
 
+
+Build and push and image  to an __image repository__ to be deployed using helm
+
 Install Helm in your local machine. Click [here](https://helm.sh/docs/intro/install/).
 
 Manually create a helm chart structure
@@ -42,7 +45,6 @@ __Ingress.yaml:__ Ingress resources to manage external access to the services.
 __Deploying the Database__
 
 Use a stable database from Helm to integrate the database with the `syself-app` by adding it as a dependency in the `values.yaml` file. eg MYSQL
-
 
 The database can also be deployed using managed services.
 
@@ -224,20 +226,6 @@ Access the cluster from any of the control planes using the command
 
 To acces the cluster from the bastion, copy the __kubeconfig__ file from the First control plane and put it in the `$HOME/.kube` path.
 
-create a namespace for the application
-
-`kubectl create ns syself`
-
-Clone the github repository containing the helm chart
-
-`git clone <github-repository-link>`
-
-Deploy the helm chart into a kubernetes cluster
-
-`helm install syself-app ./syself-helm-chart -n syself`
-
-Deploy the helm chart application
-
 To check the health of the cluster from the HAProxy dashboard
 
 In this section of the __haproxy-config.sh__ script used to configure the loadbalancer, we specified the port `8500` which will be used to access the loadbalancer from the browser.
@@ -259,3 +247,18 @@ Restart HAProxy
 Access the dashboard from the browser
 
 `<LOAD_BALANCER_IP>:8500`
+
+__Deploy the helm chart application__
+
+Create a namespace for the application
+
+`kubectl create ns syself`
+
+Clone the github repository containing the helm chart
+
+`git clone <github-repository-link>`
+
+Deploy the helm chart into a kubernetes cluster
+
+`helm install syself-app ./syself-helm-chart -n syself`
+
