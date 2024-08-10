@@ -53,8 +53,6 @@ Deploying the database using helm chart will be preferred if we want full contro
 Otherwise, the managed service is preferred for its high availability, optimized performance, less operational overhead and it is easily managed but more cost intensive when compared to managing the database using helm chart.
 
 ## __Setup the Kubernetes cluster__
-
-
 Some of the major components of a kubernetes cluster include
 
 - __Control plane (Master Nodes):__ - This schedules workloads and manages the state of the application and cluster. These tasks are carried out by the control plane using these components.
@@ -97,6 +95,8 @@ __Infrastructure setup__
 The terraform code creates 8 Virtual Machines:
 - 3 Virtual machines for the control planes
 - 3 Virtual machines for worker nodes (using auto scaling group) to scale the worker nodes depending on the workload.
+- 1 loadbalancer to route traffic to the control plane.
+- 1 Bastion host to securelt access the nodes.
 - Private network (3 private and 1 public subnets)
 - 2 security groups - 1 for the nodes and 1 for the bastion host
   - Port __22__ for secure connection in both security groups.
