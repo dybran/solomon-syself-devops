@@ -1,5 +1,18 @@
 ## __SYSELF TASK__
 
+Cretae a Github repository
+
+`solomon-syself-devops`
+
+Clone it into the local machine
+
+`git clone <github-repository-link>`
+
+
+cd into the repository directory 
+
+`cd solomon-syself-devops`
+
 ## __Create and package a helm chart to deploy a simple backend__
 
 Install Helm in your local machine. Click [here](https://helm.sh/docs/intro/install/).
@@ -16,20 +29,15 @@ Manually create a helm chart structure
 
 `touch deployment.yaml service.yaml ingress.yaml`
 
-__Chart.yaml:__ This is where the metadat of the helm chart is defined.
+__Chart.yaml:__ This is where the metadata of the helm chart is defined.
 
-__values.yaml__: Defines the Helm chart defauld values.
+__values.yaml__: Defines the Helm chart default values.
 
 __deployment.yaml:__ The kubernetes deployment resource.
 
 __service.yaml:__ Defines the Kubernetes Service resource.
 
 __Ingress.yaml:__ Ingress resources to manage external access to the services.
-
-Package and install the helm chart into a kubernetes cluster
-
-`helm install syself-app ./syself-helm-chart`
-
 
 __Deploying the Database__
 
@@ -38,7 +46,7 @@ Use a stable database from Helm to integrate the data base with the `syself-app`
 
 The database can also be deployed using managed services.
 
-Deploying the database using helm chart will be preferred if we want full control of the management of the database and resource to manage the deployment and configurations in the database is available.
+Deploying the database using helm chart will be preferred if we want full control of the management of the database and if resource to manage the deployment and configurations in the database is available.
 
 Otherwise, the managed service is preferred for its high availability, optimized performance, less operational overhead and it is easily managed but more cost intensive when compared to managing the database using helm chart.
 
@@ -47,46 +55,40 @@ Otherwise, the managed service is preferred for its high availability, optimized
 
 Some of the major components of a kubernetes cluster include
 
-- __Control plane (Master Nodes):__ - This is the brain of the cluster which  schedules workloads and manages the state of the application and cluster. These tasks are carried out by the master nodes using these components.
+- __Control plane (Master Nodes):__ - This schedules workloads and manages the state of the application and cluster. These tasks are carried out by the master nodes using these components.
   - __Kube-apiserver:__ This is where client connect to the kubernetes API. It recieves requests and processes the request which is used to update the state of the cluster. 
   - __Kube-scheduler:__ This assigns newly created pods to pods based on the availability of resources and other factors in the pod.
   - __Kube-controller-manager:__ This manages the state of the kubernetes cluster which include replication, node management and general state management.
   - __etcd:__ Kubernetes is a stateless machine. The etcd is a distributed key value store that stores the state of the cluster which include the details of the nodes, pods and service.
 
-__Worker Node:__ This handles the workload of the containers. This consists of various components that work together to achieve this. They include:
+__Worker Node:__ This handles the workload of the containers. The various components that work together to achieve this include:
 
-  - __Kubelet:__ This communicates with the control plane to recieves instructions and report on the containers status in a pod.
-  - __Kube-proxy:__ This handles network routing allowing communication between pods and services.
+  - __Kubelet:__ Communicates with the control plane to recieves instructions and report on the containers status in a pod.
+  - __Kube-proxy:__ Handles network routing allowing communication between pods and services.
 
-  - __Container Runtime:__ This runs and manages the containers on the node.
+  - __Container Runtime:__ Runs and manages the containers on the node.
 
-  - __Pod:__ This is the smallest unit in a kubernetes cluster that is deployable.
+  - __Pod:__ The smallest unit in a kubernetes cluster that is deployable.
 
 A production grade kubernetes cluster needs to be highly available, scalable and resilient.
 
 
-We need to do a couple of things for this set up:
+We need to do a couple of things for the above set up:
 
--  Atleast 3 master nodes to help with decision making.
+-  Atleast 3 master nodes to help with decision making and high availability.
 
 - Create a Loadbalancer to connect and distribute traffic to the master nodes' kube api servers.
 
 - Create a __bastion host__ to securely access the master nodes.
 
-- Create a Private network with 3 private subnets(for the master nodes) and 1 public subnet(for the bastion) will be created.
+- Create a Private network with 3 private subnets(for the master nodes) and 1 public subnet(for the bastion).
 
 - Deploy the master nodes in the 3 private subnets so we do not have a single point of failure.
 
-- Manage the infrastructure using an IAC tools (eg Terraform and Packer) to save time and reduce human error during setup.
+- Manage the infrastructure using IAC tools (eg Terraform and Packer) to save time and reduce human error during setup.
 
 I will be using the __Ubuntu 24.04__ as the base OS
 and Kubernetes version __v1.30.3__  for the setup to meet the task requirement. 
-
-__Prerequisites__
-
-- 3 master nodes 
-- 3 worker nodes
-- 1 load balancer node
 
 __Infrastructure setup__
 
@@ -207,6 +209,20 @@ Access the cluster from any of the master nodes using the command
 `kubectl get nodes` 
 
 To acces the cluster from the bastion, copy the __kubeconfig__ file from the First master node and put it in the `$HOME/.kube` path.
+
+create a namespace for the application
+
+`kubectl create ns syself`
+
+Clone the github repository containing the helm chart
+
+`git clone <github-repository-link>`
+
+Deploy the helm chart into a kubernetes cluster
+
+`helm install syself-app ./syself-helm-chart -n syself`
+
+Deploy the helm chart application
 
 To check the health of the cluster from the HAProxy dashboard
 
