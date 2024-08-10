@@ -1,4 +1,4 @@
-## SYSELF KUBERNETES CLUSTER
+## __SYSELF TASK__
 
 ## __Create and package a helm chart to deploy a simple backend__
 
