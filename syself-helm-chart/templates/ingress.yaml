@@ -17,7 +17,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "syself-helm-chart.fullname" $. }}
+                name: {{ include "syself-helm-chart.fullname" }}
                 port:
                   number: 80
           {{- end }}
