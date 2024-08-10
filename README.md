@@ -134,7 +134,7 @@ Run the `kubeadm init` command to initialize a kubernetes cluster in the __contr
 
 The above command initializes the node as a control plane:
 
-- Sets up the control plane components - __kube api server__, __kube controller manager__ and __kube scheduler__.
+- Sets up the control plane components - __kube api server__, __kube controller manager__, __etcd__ and __kube scheduler__.
 
 - Specifies the endpoint for the kubernetes Kube api server which is the loadbalancer
 
