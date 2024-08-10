@@ -46,7 +46,7 @@ build {
   }
 
   provisioner "shell" {
-    script = "./scripts/memory-metrics.sh"
+    script = "./scripts/cloudwatch-metrics.sh"
   }
 
 }

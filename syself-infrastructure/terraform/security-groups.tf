@@ -4,14 +4,6 @@ resource "aws_security_group" "syself_node_sg" {
   vpc_id = aws_vpc.syself_vpc.id
 
   ingress {
-    from_port   = 25
-    to_port     = 25
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTP"
-  }
-
-  ingress {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
@@ -36,27 +28,11 @@ resource "aws_security_group" "syself_node_sg" {
   }
 
   ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "HTTPS"
-  }
-
-  ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "SSH"
-  }
-
-  ingress {
-    from_port   = 465
-    to_port     = 465
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "SMTPS"
   }
 
   ingress {
@@ -72,22 +48,6 @@ resource "aws_security_group" "syself_node_sg" {
     to_port     = 2379
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
-    description = "Custom TCP"
-  }
-
-  ingress {
-    from_port   = 587
-    to_port     = 587
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Custom TCP"
-  }
-
-  ingress {
-    from_port   = 2000
-    to_port     = 11000
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
     description = "Custom TCP"
   }
 
