@@ -10,11 +10,8 @@ variable "args" {
     instance_type = string
     cluster_name  = string
 
-    vpc_cidr                = string
-    master_node_count       = number
-    environment             = string
-    worker_min_size         = number
-    worker_max_size         = number
-    worker_desired_capacity = number
+    vpc_cidr    = string
+    node_count  = number
+    environment = string
   })
 }

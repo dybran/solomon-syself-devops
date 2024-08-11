@@ -45,8 +45,4 @@ build {
     script = "./scripts/install-tools.sh"
   }
 
-  provisioner "shell" {
-    script = "./scripts/cloudwatch-metrics.sh"
-  }
-
 }

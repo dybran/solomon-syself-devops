@@ -19,3 +19,11 @@ ingress:
       paths:
         - /
   tls: []
+  
+persistence:
+  enabled: true
+  existingClaim: nginx-volume-claim
+  accessModes:
+    - ReadWriteOnce
+  size: 2Gi
+  storageClass: gp2

@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "syself-helm-chart.fullname" . }}
+  name: {{ include "nginx.fullname" . }}
   annotations:
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
 spec:
@@ -17,7 +17,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "syself-helm-chart.fullname" }}
+                name: {{ include "nginx.fullname" }}
                 port:
                   number: 80
           {{- end }}

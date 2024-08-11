@@ -44,6 +44,14 @@ resource "aws_security_group" "syself_node_sg" {
   }
 
   ingress {
+    from_port   = 8500
+    to_port     = 8500
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Custom TCP"
+  }
+
+  ingress {
     from_port   = 2379
     to_port     = 2379
     protocol    = "tcp"

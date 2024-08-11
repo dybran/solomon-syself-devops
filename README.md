@@ -43,7 +43,7 @@ __service.yaml:__ Defines the Kubernetes Service resource.
 __Ingress.yaml:__ Ingress resources to manage external access to the services.
 
 __Deploying the Database__
-
+#############
 Use a stable database from Helm to integrate the database with the `syself-app` by adding it as a dependency in the `values.yaml` file. eg MYSQL
 
 The database can also be deployed using managed services.
@@ -51,7 +51,7 @@ The database can also be deployed using managed services.
 Deploying the database using helm chart will be preferred if we want full control of the management of the database and if resource to manage the deployment and configurations in the database is available.
 
 Otherwise, the managed service is preferred for its high availability, optimized performance, less operational overhead and it is easily managed but more cost intensive when compared to managing the database using helm chart.
-
+#################
 ## __Setup the Kubernetes cluster__
 Some of the major components of a kubernetes cluster include
 
@@ -87,15 +87,131 @@ We need to do a couple of things for the above set up:
 
 - Manage the infrastructure using IAC tools (eg Terraform and Packer) to save time and reduce human error during setup.
 
+- Create a __Container storage Interface__ which helps kubernetes to manage storage volumes.
+
 I will be using the __Ubuntu 24.04__ as the base OS
 and Kubernetes version __v1.30.3__  for the setup to meet the task requirement. 
+
+#################
+Install the __EBS CSI__ from __helm artifactory__
+
+Setup open ID Connect for authentication and authorization in the kubernetes.
+
+Kubernetes uses OIDC to authenticate users. AWS Cognito is delegated user authentication by kubernetes.
+
+__Using AWS Cognito as an OIDC Provider__
+
+__Create a Cognito User Pool__
+
+- Sign in to the AWS Management Console.
+
+  Navigate to Amazon Cognito and choose Manage User Pools.
+
+  Click Create a user pool.
+
+  Choose Review defaults and click Create pool to use the default settings.
+
+- Configure App Client
+
+  Go to the App clients tab in your user pool.
+
+  Click Add an app client.
+
+  Provide a name, and leave the default settings or adjust them as needed. Click Create app client.
+
+- Configure Domain
+
+  Navigate to the App integration tab.
+
+  Click Domain name.
+
+  Choose Custom domain or use the default domain provided by Cognito. Configure as required.
+
+- Obtain OIDC Information
+
+  Go to the App client settings in the App integration tab.
+
+  Copy the Callback URL(s) and Sign out URL(s) for your application.
+
+- Configure AWS IAM OIDC Provider
+
+Use Terraform or the AWS Management Console to create an OIDC provider in AWS IAM.
+
+Update Kubernetes API Server
+
+Update the Kubernetes API server to use the OIDC provider.
+
+Edit the API server manifest in the `/etc/kubernetes/manifests/kube-apiserver.yaml`
+
+```
+--oidc-issuer-url=https://cognito-idp.{region}.amazonaws.com/{user_pool_id}
+--oidc-client-id={app_client_id}
+--oidc-username-claim=sub
+```
+After modification, a restart is triggered
+
+
+Create and deploy the __service-account.yaml__ manifest in the cluster
+
+```
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ebs-csi-controller-sa
+  namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::939895954199:role/EBSCSIRole
+```
+`kubectl apply -f service-account.yaml`
+
+Install the ebs csi driver using helm
+
+add the repository
+
+`helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver/`
+
+install the ebs csi driver
+
+`helm install my-aws-ebs-csi-driver aws-ebs-csi-driver/aws-ebs-csi-driver --version 2.33.0`
+
+deploy the __storageclass.yaml__
+
+```
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: gp2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4
+```
+`kubectl apply -f storageclass.yaml`
+
+Create and deploy the persistent volume claim (PVC) - __pvc.yaml__
+
+```
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: nginx-volume-claim
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: gp2
+```
 
 __Infrastructure setup__
 
 The terraform code creates 8 Virtual Machines:
 - 3 Virtual machines for the control planes
-- 3 Virtual machines for worker nodes (using auto scaling group) to scale the worker nodes depending on the workload.
-- 1 loadbalancer to route traffic to the control plane.
+- 3 Virtual machines for worker nodes.
+- 1 Loadbalancer to route traffic to the control plane.
 - 1 Bastion host to securelt access the nodes.
 - Private network (3 private and 1 public subnets)
 - 2 security groups - 1 for the nodes and 1 for the bastion host
@@ -106,7 +222,7 @@ The terraform code creates 8 Virtual Machines:
   - Ports __3000-32767__ for communication within the subnet to connect on ports used by the worker nodes.
   - Port __6443__ used by the kubernetes api to communicate with the cluster.
   - Port __80__ used to access the cluster from the browser.
-- Alarms for CPU and Memory monitoring.
+- Create a __Container storage Interface__ which helps kubernetes to manage storage volumes.
 
 Install __Terraform__ and __Packer__.
 
@@ -262,3 +378,4 @@ Deploy the helm chart into a kubernetes cluster
 
 `helm install syself-app ./syself-helm-chart -n syself`
 
+__KUBERNETES LENS__ can be installed and used to monitor pod health, logs and resource utilization of the cluster. Click [here](https://docs.k8slens.dev/)
