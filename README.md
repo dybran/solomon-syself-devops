@@ -43,7 +43,7 @@ __service.yaml:__ Defines the Kubernetes Service resource.
 __Ingress.yaml:__ Ingress resources to manage external access to the services.
 
 __Deploying the Database__
-#############
+
 Use a stable database from Helm to integrate the database with the `syself-app` by adding it as a dependency in the `values.yaml` file. eg MYSQL
 
 The database can also be deployed using managed services.
@@ -51,7 +51,7 @@ The database can also be deployed using managed services.
 Deploying the database using helm chart will be preferred if we want full control of the management of the database and if resource to manage the deployment and configurations in the database is available.
 
 Otherwise, the managed service is preferred for its high availability, optimized performance, less operational overhead and it is easily managed but more cost intensive when compared to managing the database using helm chart.
-#################
+
 ## __Setup the Kubernetes cluster__
 Some of the major components of a kubernetes cluster include
 
@@ -92,8 +92,8 @@ We need to do a couple of things for the above set up:
 I will be using the __Ubuntu 24.04__ as the base OS
 and Kubernetes version __v1.30.3__  for the setup to meet the task requirement. 
 
-#################
-Install the __EBS CSI__ from __helm artifactory__
+
+Install the __EBS CSI__
 
 Setup open ID Connect for authentication and authorization in the kubernetes.
 
