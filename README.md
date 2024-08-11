@@ -8,12 +8,11 @@ Clone it into the local machine
 
 `git clone <github-repository-link>`
 
-
 cd into the repository directory 
 
-`cd solomon-syself-devops`
+`cd <repository-directory>`
 
-## __Create and package a helm chart to deploy a simple backend__
+## __Create and package helm chart to deploy a simple backend__
 
 
 Build and push and image  to an __image repository__ to be deployed using helm
@@ -22,7 +21,7 @@ Install Helm in your local machine. Click [here](https://helm.sh/docs/intro/inst
 
 Manually create a helm chart structure
 
-`mkdir syself-helm-chart && cd syself-helm-chart`
+`mkdir nginx && cd nginx`
 
 `mkdir templates`
 
@@ -366,16 +365,16 @@ Access the dashboard from the browser
 
 __Deploy the helm chart application__
 
-Create a namespace for the application
-
-`kubectl create ns syself`
-
 Clone the github repository containing the helm chart
 
 `git clone <github-repository-link>`
 
+Create a namespace for the application
+
+`kubectl create ns syself-nginx`
+
 Deploy the helm chart into a kubernetes cluster
 
-`helm install syself-app ./syself-helm-chart -n syself`
+`helm install syself-app ./nginx -n syself-nginx`
 
 __KUBERNETES LENS__ can be installed and used to monitor pod health, logs and resource utilization of the cluster. Click [here](https://docs.k8slens.dev/)
